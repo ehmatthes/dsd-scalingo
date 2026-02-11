@@ -167,6 +167,14 @@ class PlatformDeployer:
 
         # Push project.
         plugin_utils.write_output("  Deploying to Scalingo...")
+        cmd = "git push scalingo main"
+        plugin_utils.run_slow_command(cmd)
+
+        # Open project.
+        plugin_utils.write_output("  Opening deployed app in a new browser tab...")
+        cmd = f"scalingo --apps {self.app_name} open"
+        output = plugin_utils.run_quick_command(cmd)
+        plugin_utils.write_output(output)
 
         # Should set self.deployed_url, which will be reported in the success message.
         pass
