@@ -128,7 +128,7 @@ class PlatformDeployer:
         """Add a Procfile."""
         path = dsd_config.project_root / "Procfile"
         contents = f"web: gunicorn {dsd_config.local_project_name}.wsgi --log-file -"
-        content += "\npostdeploy: bash bin/post_deploy.sh"
+        contents += "\npostdeploy: bash bin/post_deploy.sh"
         plugin_utils.add_file(path, contents)
 
     def _add_bin_post_deploy(self):
@@ -149,7 +149,7 @@ class PlatformDeployer:
         # Add Scalingo-specific settings.
         template_path = self.templates_path / "settings.py"
         context = {
-            "deployed_project_name": self._get_deployed_project_name(),
+            "deployed_project_name": self.app_name,
         }
         plugin_utils.modify_settings_file(template_path, context)
 
@@ -172,12 +172,13 @@ class PlatformDeployer:
 
         # Open project.
         plugin_utils.write_output("  Opening deployed app in a new browser tab...")
-        cmd = f"scalingo --apps {self.app_name} open"
+        cmd = f"scalingo --app {self.app_name} open"
         output = plugin_utils.run_quick_command(cmd)
         plugin_utils.write_output(output)
 
         # Should set self.deployed_url, which will be reported in the success message.
-        pass
+        # DEV: Construct actual URL.
+        self.deployed_url = "deployed_url"
 
     def _show_success_message(self):
         """After a successful run, show a message about what to do next.
