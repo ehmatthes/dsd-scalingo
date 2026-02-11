@@ -83,7 +83,7 @@ class PlatformDeployer:
         Raises:
             DSDCommandError: If we find any reason deployment won't work.
         """
-        breakpoint()
+        ...
 
 
     def _prep_automate_all(self):
