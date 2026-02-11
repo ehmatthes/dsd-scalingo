@@ -94,13 +94,13 @@ class PlatformDeployer:
         plugin_utils.write_output(msg)
 
         # Set the Scalingo project name.
-        if not self.dsd_config.deployed_project_name:
-            self.dsd_config.deployed_project_name = dsd_config.local_project_name
-            if len(self.deployed_project_name) <= 6:
+        if not dsd_config.deployed_project_name:
+            dsd_config.deployed_project_name = dsd_config.local_project_name
+            if len(dsd_config.deployed_project_name) <= 6:
                 # Scalingo project names need to be between 6 and 48 characters.
-                self.deployed_project_name += "-scalingo"
+                dsd_config.deployed_project_name += "-scalingo"
         
-        self.app_name = self.deployed_project_name
+        self.app_name = dsd_config.deployed_project_name
 
         # Issue CLI command to generate new Scalingo project.
         cmd = f"scalingo create {dsd_config.deployed_project_name}"
