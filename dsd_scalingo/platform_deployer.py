@@ -79,6 +79,10 @@ class PlatformDeployer:
         self._prep_automate_all()
 
         # Configure project for deployment to Scalingo
+        self._add_python_version()
+        self._add_procfile()
+        self._add_bin_post_deploy()
+        self._add_requirements()
 
         self._conclude_automate_all()
         self._show_success_message()
@@ -128,6 +132,34 @@ class PlatformDeployer:
 
         # DEV: Write a loop to poll for a running db instance.
         time.sleep(30)
+
+    def _add_python_version(self):
+        """Add a .python-version file."""
+        path = dsd_config.project_root / ".python-version"
+        plugin_utils.add_file(path, contents="3.14")
+
+    def _add_procfile(self):
+        """Add a Procfile."""
+        path = dsd_config.project_root / "Procfile"
+        contents = f"web: gunicorn {dsd_config.local_project_name}.wsgi --log-file -"
+        content += "\npostdeploy: bash bin/post_deploy.sh"
+        plugin_utils.add_file(path, contents)
+
+    def _add_bin_post_deploy(self):
+        """Add a bin/post_deploy.sh file."""
+        path_bin = dsd_config.project_root / "bin"
+        plugin_utils.add_dir(path_bin)
+
+        path_post_deploy = path_bin / "post_deploy.sh"
+        contents = "#!/bin/sh\n\npython manage.py migrate\n"
+        plugin_utils.add_file(path_post_deploy, contents)
+
+    def _add_requirements(self):
+        """Add requirements for deploying to Scalingo."""
+        requirements = ["gunicorn", "psycopg2", "dj-database-url", "whitenoise", "dj-static"]
+        plugin_utils.add_packages(requirements)
+
+
 
 
 
