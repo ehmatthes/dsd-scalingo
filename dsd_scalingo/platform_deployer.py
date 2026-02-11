@@ -98,7 +98,7 @@ class PlatformDeployer:
             dsd_config.deployed_project_name = dsd_config.local_project_name
             if len(dsd_config.deployed_project_name) <= 6:
                 # Scalingo project names need to be between 6 and 48 characters.
-                dsd_config.deployed_project_name += "-scalingo"
+                dsd_config.deployed_project_name += "-deployed"
         
         self.app_name = dsd_config.deployed_project_name
 
