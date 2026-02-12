@@ -32,3 +32,15 @@ If you're doing a test deployment and want to destroy your project:
 ```sh
 $ scalingo --app <app-name> destroy
 ```
+
+Scalingo documentation
+---
+
+These have been the most helpful parts of the Scalingo docs so far:
+
+- [Python on Scalingo](https://doc.scalingo.com/languages/python/start)
+- [Get started with Django on Scalingo](https://doc.scalingo.com/languages/python/django/start#create-your-application-and-databases-on-scalingo)
+- [CLI reference](https://doc.scalingo.com/tools/cli/features#run-custom-job)
+- [Environment variables](https://doc.scalingo.com/platform/app/environment)
+- [First steps/ SSH key setup](https://doc.scalingo.com/platform/getting-started/first-steps#ssh-key-setup)
+- [Postgres on Scalingo](https://doc.scalingo.com/databases/postgresql/about/overview)
