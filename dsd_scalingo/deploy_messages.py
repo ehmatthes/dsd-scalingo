@@ -9,7 +9,9 @@ from django.conf import settings
 
 confirm_automate_all = """
 The --automate-all flag means django-simple-deploy will:
-- ...
+- Run `scalingo create` for you, to create an empty Scalingo project.
+- Run `scalingo --app <app-name> addons-add postgresql postgresql-starter-512`, to create a starter Postgres database.
+- Configure your project for deployment on Scalingo.
 - Commit all changes to your project that are necessary for deployment.
 - Push these changes to Scalingo.
 - Open your deployed project in a new browser tab.
@@ -22,7 +24,7 @@ Okay, cancelling Scalingo configuration and deployment.
 # DEV: This could be moved to deploy_messages, with an arg for platform and URL.
 cli_not_installed = """
 In order to deploy to Scalingo, you need to install the Scalingo CLI.
-  See here: ...
+  See here: https://doc.scalingo.com/tools/cli/start
 After installing the CLI, you can run the deploy command again.
 """
 
@@ -30,7 +32,7 @@ cli_logged_out = """
 You are currently logged out of the Scalingo CLI. Please log in,
   and then run the deploy command again.
 You can log in from  the command line:
-  $ ...
+  $ scalingo login
 """
 
 
@@ -90,7 +92,7 @@ def success_msg_automate_all(deployed_url):
         - You can also visit your project at {deployed_url}
 
         If you make further changes and want to push them to Scalingo,
-        commit your changes and then run `...`.
+        commit your changes and then run `git push scalingo main`.
     """
     )
     return msg

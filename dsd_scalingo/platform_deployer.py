@@ -84,6 +84,7 @@ class PlatformDeployer:
             DSDCommandError: If we find any reason deployment won't work.
         """
         ...
+        # DEV: Consider `scalingo self` or `scalingo whoami`
 
 
     def _prep_automate_all(self):
