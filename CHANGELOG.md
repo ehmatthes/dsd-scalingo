@@ -8,7 +8,7 @@ Changelog: dsd-<platformname>
 
 #### External changes
 
-- N/A
+- Wrote initial external messages for --automate-all deployments.
 
 #### Internal changes
 
