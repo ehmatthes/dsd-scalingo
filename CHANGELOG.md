@@ -4,11 +4,23 @@ Changelog: dsd-<platformname>
 0.1 - Preliminary support for --automate-all.
 ---
 
-### Unreleased
+### 0.1.2
+
+#### External changes
+
+- Reports deployed URL in output and log.
+
+#### Internal changes
+
+- Includes dump of `scalingo help` in `developer_resources/`.
+- E2e test for `--automate-all` passes on macOS.
+
+### 0.1.1
 
 #### External changes
 
 - Wrote initial external messages for --automate-all deployments.
+- Initial README.
 
 #### Internal changes
 

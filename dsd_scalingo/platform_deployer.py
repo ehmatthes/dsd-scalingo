@@ -178,8 +178,8 @@ class PlatformDeployer:
         plugin_utils.write_output(output)
 
         # Should set self.deployed_url, which will be reported in the success message.
-        # DEV: Construct actual URL.
-        self.deployed_url = "deployed_url"
+        # DEV: Get region before building deployed URL.
+        self.deployed_url = f"https://{ dsd_config.deployed_project_name }.osc-fr1.scaling.io"
 
     def _show_success_message(self):
         """After a successful run, show a message about what to do next.
