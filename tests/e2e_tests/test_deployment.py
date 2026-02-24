@@ -1,4 +1,6 @@
 import re, time
+import random
+import string
 
 import pytest
 
@@ -40,7 +42,12 @@ def test_deployment(tmp_project, cli_options, request):
     #     request.config.cache.set("app_name", app_name)
 
     # Run simple_deploy against the test project.
-    it_utils.run_simple_deploy(python_cmd, automate_all=cli_options.automate_all)
+    # Make a unique name for this test deployment, so we can reliably destroy it
+    # without risking any of the developer's own projects.
+    name_extension = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    deployed_project_name = f"blog-e2e-{name_extension}"
+    plugin_args_string = f"--deployed-project-name {deployed_project_name}"
+    it_utils.run_simple_deploy(python_cmd, automate_all=cli_options.automate_all, plugin_args_string=plugin_args_string)
 
     # If testing Pipenv, lock after adding new packages.
     if cli_options.pkg_manager == "pipenv":
@@ -54,15 +61,15 @@ def test_deployment(tmp_project, cli_options, request):
     #   This also commits configuration changes and pushes the project
     #   when testing the configuration-only workflow.
     # When testing automate_all, cache app_name for teardown work.
-    # if cli_options.automate_all:
-    #     project_url, app_name = platform_utils.get_project_url_name()
-    #     request.config.cache.set("app_name", app_name)
-    # else:
-    #     it_utils.commit_configuration_changes()
-    #     project_url = platform_utils.deploy_project(app_name)
-    breakpoint()
+    if cli_options.automate_all:
+        project_url = f"https://{deployed_project_name}.osc-fr1.scalingo.io"
+        request.config.cache.set("app_name", deployed_project_name)
+    else:
+        it_utils.commit_configuration_changes()
+        project_url = platform_utils.deploy_project(app_name)
+
     # Note: ***** Remove this line, or your test will always report as passed! *****
-    remote_functionality_passed = True
+    # remote_functionality_passed = True
 
     # Remote functionality test often fails if run too quickly after deployment.
     print("\nPausing 10s to let deployment finish...")
@@ -74,9 +81,9 @@ def test_deployment(tmp_project, cli_options, request):
     # Test functionality of both deployed app, and local project.
     #   We want to make sure the deployment works, but also make sure we haven't
     #   affected functionality of the local project using the development server.
-    # remote_functionality_passed = it_utils.check_deployed_app_functionality(
-    #     python_cmd, project_url
-    # )
+    remote_functionality_passed = it_utils.check_deployed_app_functionality(
+        python_cmd, project_url
+    )
     local_functionality_passed = it_utils.check_local_app_functionality(python_cmd)
     log_check_passed = platform_utils.check_log(tmp_project)
 
