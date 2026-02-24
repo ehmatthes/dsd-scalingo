@@ -60,7 +60,7 @@ def test_deployment(tmp_project, cli_options, request):
     # else:
     #     it_utils.commit_configuration_changes()
     #     project_url = platform_utils.deploy_project(app_name)
-    
+    breakpoint()
     # Note: ***** Remove this line, or your test will always report as passed! *****
     remote_functionality_passed = True
 
