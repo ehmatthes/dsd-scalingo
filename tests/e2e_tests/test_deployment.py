@@ -44,7 +44,7 @@ def test_deployment(tmp_project, cli_options, request):
     # Run simple_deploy against the test project.
     # Make a unique name for this test deployment, so we can reliably destroy it
     # without risking any of the developer's own projects.
-    name_extension = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    name_extension = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
     deployed_project_name = f"blog-e2e-{name_extension}"
     plugin_args_string = f"--deployed-project-name {deployed_project_name}"
     it_utils.run_simple_deploy(python_cmd, automate_all=cli_options.automate_all, plugin_args_string=plugin_args_string)
