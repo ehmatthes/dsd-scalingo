@@ -19,7 +19,7 @@ Fully automated deployment
 $ scalingo login
 $ pip install dsd-scalingo
 # Add django_simple_deploy to INSTALLED_APPS.
-$ python manage.yp deploy --automate-all
+$ python manage.py deploy --automate-all
 ```
 
 Your deployed project should appear in a new browser tab.

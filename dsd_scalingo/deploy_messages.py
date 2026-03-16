@@ -35,6 +35,11 @@ You can log in from  the command line:
   $ scalingo login
 """
 
+# DEV: This should probably be a dynamic string, with the project name.
+project_already_exists = """
+A remote project with this name already exists.
+"""
+
 
 # --- Dynamic strings ---
 # These need to be generated in functions, to display information that's determined as

@@ -85,7 +85,28 @@ class PlatformDeployer:
         """
         ...
         # DEV: Consider `scalingo self` or `scalingo whoami`
+        if dsd_config.unit_testing:
+            return
 
+        plugin_utils.write_output("Validating Scalingo CLI...")
+        
+        # Make sure CLI is installed.
+        cmd = "scalingo --version"
+        try:
+            output_obj = plugin_utils.run_quick_command(cmd)
+        except FileNotFoundError:
+            raise DSDCommandError(platform_msgs.cli_not_installed)
+        
+        if "scalingo version " not in output_obj.stdout.decode():
+            raise DSDCommandError(platform_msgs.cli_not_installed)
+        
+        cmd = "scalingo whoami"
+        output_obj = plugin_utils.run_quick_command(cmd)
+
+        if "You are logged in as " not in output_obj.stdout.decode():
+            raise DSDCommandError(platform_msgs.cli_logged_out)
+
+        plugin_utils.write_output("  CLI is installed and authenticated.")
 
     def _prep_automate_all(self):
         """Take any further actions needed if using automate_all."""
@@ -108,6 +129,10 @@ class PlatformDeployer:
         output_obj = plugin_utils.run_quick_command(cmd)
         output_str = output_obj.stdout.decode()
         plugin_utils.write_output(output_str)
+
+        # If the remote project already exists, bail.
+        if "name → has already been taken" in output_str:
+            raise DSDCommandError(platform_msgs.project_already_exists)
 
         msg = "  Creating a new Postgres db..."
         plugin_utils.write_output(msg)
