@@ -40,10 +40,27 @@ project_already_exists = """
 A remote project with this name already exists.
 """
 
+no_remote_project = """
+There is no remote project to deploy to. Before using the configuration-only
+mode, please create a remote project. You can use the Scalingo cli to create a
+project:
+    $ scalingo create <remote-project-name>
+"""
+
 
 # --- Dynamic strings ---
 # These need to be generated in functions, to display information that's determined as
 # the script runs.
+
+def use_scalingo_app(app_name):
+    """Confirmation message for using a Scalingo app that we found."""
+    msg = dedent(
+        f"""
+        Found one Scalingo app: {app_name}
+        Is this the Scalingo app you want to deploy to?
+    """
+    )
+    return msg
 
 def success_msg(log_output=""):
     """Success message, for configuration-only run.

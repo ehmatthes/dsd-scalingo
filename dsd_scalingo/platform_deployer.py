@@ -38,6 +38,7 @@ import requests
 
 from . import deploy_messages as platform_msgs
 from .plugin_config import plugin_config
+from . import utils as scalingo_utils
 
 from django_simple_deploy.management.commands.utils import plugin_utils
 from django_simple_deploy.management.commands.utils.plugin_utils import dsd_config
@@ -61,6 +62,7 @@ class PlatformDeployer:
         plugin_utils.write_output("\nConfiguring project for deployment to Scalingo...")
 
         self._validate_platform()
+        breakpoint()
         self._prep_automate_all()
 
         # Configure project for deployment to Scalingo
@@ -107,6 +109,31 @@ class PlatformDeployer:
             raise DSDCommandError(platform_msgs.cli_logged_out)
 
         plugin_utils.write_output("  CLI is installed and authenticated.")
+
+        if dsd_config.automate_all:
+            # No more validation to do for fully-automated workflows.
+            return
+
+        # Validate that required resources have been created for a
+        # configuration-only workflow.
+        cmd = "scalingo apps"
+        output_obj = plugin_utils.run_quick_command(cmd)
+        app_names = scalingo_utils.get_app_names(output_obj.stdout.decode())
+
+        if len(app_names) == 0:
+            raise DSDCommandError(platform_msgs.no_remote_project)
+
+        if len(app_names) == 1:
+            app_name = app_names[0]
+            msg = platform_msgs.use_scalingo_app(app_name)
+            confirmed = plugin_utils.get_confirmation(msg)
+
+            if not confirmed:
+                raise DSDCommandError(platform_msgs.no_remote_project)
+            else:
+                msg = f"\nOkay, deploying to {app_name}..."
+                plugin_utils.write_output(msg)
+                return
 
     def _prep_automate_all(self):
         """Take any further actions needed if using automate_all."""
