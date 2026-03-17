@@ -130,6 +130,7 @@ class PlatformDeployer:
                 raise DSDCommandError(platform_msgs.no_remote_project)
             else:
                 msg = f"\nOkay, deploying to {app_name}..."
+                dsd_config.deployed_project_name = app_name
                 plugin_utils.write_output(msg)
                 return
 
