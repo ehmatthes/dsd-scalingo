@@ -119,12 +119,13 @@ class PlatformDeployer:
         cmd = "scalingo apps"
         output_obj = plugin_utils.run_quick_command(cmd)
         app_names = scalingo_utils.get_app_names(output_obj.stdout.decode())
+        new_apps = scalingo_utils.get_new_apps(app_names)
 
-        if len(app_names) == 0:
+        if len(new_apps) == 0:
             raise DSDCommandError(platform_msgs.no_remote_project)
 
-        if len(app_names) == 1:
-            app_name = app_names[0]
+        if len(new_apps) == 1:
+            app_name = new_apps[0]
             msg = platform_msgs.use_scalingo_app(app_name)
             confirmed = plugin_utils.get_confirmation(msg)
 
@@ -134,6 +135,11 @@ class PlatformDeployer:
                 msg = f"\nOkay, deploying to {app_name}..."
                 plugin_utils.write_output(msg)
                 return
+
+        # There's more than one Scalingo app with a new status.
+        # We're not handling this case now.
+        raise DSDCommandError(platform_msgs.multiple_new_apps)
+
 
     def _prep_automate_all(self):
         """Take any further actions needed if using automate_all."""

@@ -47,6 +47,10 @@ project:
     $ scalingo create <remote-project-name>
 """
 
+multiple_new_apps = """
+Multiple apps with a status of `new` were found. There needs to be only one
+app with a status of `new` to deploy to.
+"""
 
 # --- Dynamic strings ---
 # These need to be generated in functions, to display information that's determined as
