@@ -116,10 +116,7 @@ class PlatformDeployer:
 
         # Validate that required resources have been created for a
         # configuration-only workflow.
-        cmd = "scalingo apps"
-        output_obj = plugin_utils.run_quick_command(cmd)
-        app_names = scalingo_utils.get_app_names(output_obj.stdout.decode())
-        new_apps = scalingo_utils.get_new_apps(app_names)
+        new_apps = scalingo_utils.get_new_apps()
 
         if len(new_apps) == 0:
             raise DSDCommandError(platform_msgs.no_remote_project)

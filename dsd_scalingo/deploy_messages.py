@@ -60,7 +60,7 @@ def use_scalingo_app(app_name):
     """Confirmation message for using a Scalingo app that we found."""
     msg = dedent(
         f"""
-        Found one Scalingo app: {app_name}
+        Found one Scalingo app with a status of `new`: {app_name}
         Is this the Scalingo app you want to deploy to?
     """
     )

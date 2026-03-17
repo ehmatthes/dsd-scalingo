@@ -5,26 +5,24 @@ import re
 from django_simple_deploy.management.commands.utils import plugin_utils
 
 
-def get_app_names(output_str):
+def get_new_apps():
+    """Check user's apps, and only consider apps that have a status of `new`."""
+    cmd = "scalingo apps"
+    output_obj = plugin_utils.run_quick_command(cmd)
+    app_names = _get_app_names(output_obj.stdout.decode())
+
+    return [app for app in app_names if _get_app_status(app) == "new"]
+
+
+# --- Helper functions ---
+
+def _get_app_names(output_str):
     """Parse output of `scalingo apps` for project names."""
     re_app_names = r"^\u2502 (.*?) \u2502"
     matches = re.finditer(re_app_names, output_str, re.MULTILINE)
     matches = [m.group(1).strip() for m in matches]
     matches.remove("NAME")
     return matches
-
-def get_new_apps(app_names):
-    """Check each app, and only keep apps that have a status of `new`."""
-    # new_apps = []
-    # for app_name in app_names:
-    #     status = _get_app_status(app_name)
-    #     if status == "new":
-    #         new_apps.append(app_name)
-
-    return [app for app in app_names if _get_app_status(app) == "new"]
-
-
-# --- Helper functions ---
 
 def _get_app_status(app_name):
     """Get the status of a Scalingo app."""
