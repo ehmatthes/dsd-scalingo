@@ -1,6 +1,18 @@
 Changelog: dsd-<platformname>
 ===
 
+0.2 - Preliminary support configuration-only deployments.
+
+### 0.2.0
+
+#### External changes
+
+- Supports configuration-only deployment, through `python manage.py deploy`.
+
+#### Internal changes
+
+- Adds unit tests, which are run with `pytest tests/unit_tests`.
+
 0.1 - Preliminary support for --automate-all.
 ---
 
