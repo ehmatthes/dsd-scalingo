@@ -9,6 +9,33 @@ Current status
 
 This plugin is in a pre-1.0 development phase. Scalingo has one of the best free trial plans in the industry, so this plugin will be prioritized and should move forward quickly.
 
+Configuration-only deployment
+---
+
+In this mode, django-simple-deploy handles all the configuration work, but lets you create the remote Scalingo app, commit changes that are made, and run the `push` command yourself.
+
+- Install the Scalingo CLI.
+- Upload your SSH public key to Scalingo.
+- Run the following commands to install the plugin, and create a remote Scalingo app:
+```sh
+$ pip install dsd-scalingo
+# Add django_simple_deploy to INSTALLED_APPS.
+$ scalingo login
+$ scalingo create <scalingo-app-name>
+```
+
+Now review the changes that were made, and then push your project:
+
+```sh
+$ git add .
+$ git commit -m "Configured for deployment to Scalingo."
+$ git push scalingo main
+$ scalingo open
+```
+
+Your deployed project should appear in a new browser tab.
+
+
 Fully automated deployment
 ---
 
