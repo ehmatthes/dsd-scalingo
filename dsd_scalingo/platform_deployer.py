@@ -62,8 +62,8 @@ class PlatformDeployer:
         plugin_utils.write_output("\nConfiguring project for deployment to Scalingo...")
 
         self._validate_platform()
-        breakpoint()
         self._prep_automate_all()
+        breakpoint()
 
         # Configure project for deployment to Scalingo
         self._add_python_version()
@@ -165,6 +165,11 @@ class PlatformDeployer:
         if "name → has already been taken" in output_str:
             raise DSDCommandError(platform_msgs.project_already_exists)
 
+        self._create_postgres_db()
+        
+
+    def _create_postgres_db(self):
+        """Create a remote Postgres db."""
         msg = "  Creating a new Postgres db..."
         plugin_utils.write_output(msg)
 
