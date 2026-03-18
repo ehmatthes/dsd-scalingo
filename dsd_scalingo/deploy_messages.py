@@ -96,13 +96,13 @@ def success_msg(log_output=""):
             $ git add .
             $ git commit -am "Configured project for deployment."
         - Push your project to Scalingo's servers:
-            $ ...
+            $ git push scalingo main
         - Open your project:
-            $ ...    
+            $ scalingo open
         - As you develop your project further:
             - Make local changes
             - Commit your local changes
-            - Run `...` again to push your changes.
+            - Run `git push scalingo main` again to push your changes.
     """
     )
 

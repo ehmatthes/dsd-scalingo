@@ -17,9 +17,7 @@ def get_existing_dbs(app_name):
     """Check addons for this Scalingo app, and return any databases."""
     cmd = f"scalingo addons --app {app_name}"
     output_obj = plugin_utils.run_quick_command(cmd)
-    db_names = _parse_existing_dbs(output_obj.stdout.decode())
-
-    return []
+    return _parse_existing_dbs(output_obj.stdout.decode())
 
 
 # --- Helper functions ---

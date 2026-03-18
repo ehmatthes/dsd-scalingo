@@ -64,7 +64,6 @@ class PlatformDeployer:
         self._validate_platform()
         self._prep_automate_all()
         self._prep_config_only()
-        breakpoint()
 
         # Configure project for deployment to Scalingo
         self._add_python_version()
@@ -181,7 +180,6 @@ class PlatformDeployer:
         else:
             msg = platform_msgs.found_existing_db(self.app_name, existing_dbs)
             raise DSDCommandError(msg)
-        
 
     def _create_postgres_db(self):
         """Create a remote Postgres db."""
