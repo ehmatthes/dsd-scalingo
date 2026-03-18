@@ -10,7 +10,7 @@ def get_new_apps():
     cmd = "scalingo apps"
     output_obj = plugin_utils.run_quick_command(cmd)
     app_names = _get_app_names(output_obj.stdout.decode())
-
+    
     return [app for app in app_names if _get_app_status(app) == "new"]
 
 def get_existing_dbs(app_name):
@@ -24,6 +24,9 @@ def get_existing_dbs(app_name):
 
 def _get_app_names(output_str):
     """Parse output of `scalingo apps` for project names."""
+    if "You haven't created any app yet" in output_str:
+        return []
+
     re_app_names = r"^\u2502 (.*?) \u2502"
     matches = re.finditer(re_app_names, output_str, re.MULTILINE)
     matches = [m.group(1).strip() for m in matches]

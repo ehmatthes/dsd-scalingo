@@ -5,6 +5,11 @@ from dsd_scalingo import utils
 import sample_output
 
 
+def test_get_app_names_none():
+    """Tests for _get_app_names() util function."""
+    app_names = utils._get_app_names(sample_output.apps_list_none)
+    assert app_names == []
+
 def test_get_app_names_single_app():
     """Tests for _get_app_names() util function."""
     app_names = utils._get_app_names(sample_output.apps_list_single)

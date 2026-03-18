@@ -1,5 +1,10 @@
 """Sample Scalingo cli output for unit tests."""
 
+apps_list_none = """
+  You haven't created any app yet, create your first application using:
+  → scalingo create <app_name>
+"""
+
 apps_list_single = """
 ┌───────────────┬───────┬────────┬─────────────────────┐
 │     NAME      │ ROLE  │ STATUS │      PROJECT        │
