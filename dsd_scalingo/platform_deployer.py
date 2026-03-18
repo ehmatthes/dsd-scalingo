@@ -38,6 +38,7 @@ import requests
 
 from . import deploy_messages as platform_msgs
 from .plugin_config import plugin_config
+from . import utils as scalingo_utils
 
 from django_simple_deploy.management.commands.utils import plugin_utils
 from django_simple_deploy.management.commands.utils.plugin_utils import dsd_config
@@ -62,6 +63,7 @@ class PlatformDeployer:
 
         self._validate_platform()
         self._prep_automate_all()
+        self._prep_config_only()
 
         # Configure project for deployment to Scalingo
         self._add_python_version()
@@ -85,10 +87,64 @@ class PlatformDeployer:
         """
         ...
         # DEV: Consider `scalingo self` or `scalingo whoami`
+        if dsd_config.unit_testing:
+            return
+
+        plugin_utils.write_output("Validating Scalingo CLI...")
+        
+        # Make sure CLI is installed.
+        cmd = "scalingo --version"
+        try:
+            output_obj = plugin_utils.run_quick_command(cmd)
+        except FileNotFoundError:
+            raise DSDCommandError(platform_msgs.cli_not_installed)
+        
+        if "scalingo version " not in output_obj.stdout.decode():
+            raise DSDCommandError(platform_msgs.cli_not_installed)
+        
+        cmd = "scalingo whoami"
+        output_obj = plugin_utils.run_quick_command(cmd)
+
+        if "You are logged in as " not in output_obj.stdout.decode():
+            raise DSDCommandError(platform_msgs.cli_logged_out)
+
+        plugin_utils.write_output("  CLI is installed and authenticated.")
+
+        if dsd_config.automate_all:
+            # No more validation to do for fully-automated workflows.
+            return
+
+        # Validate that required resources have been created for a
+        # configuration-only workflow.
+        new_apps = scalingo_utils.get_new_apps()
+
+        if len(new_apps) == 0:
+            raise DSDCommandError(platform_msgs.no_remote_project)
+
+        if len(new_apps) == 1:
+            app_name = new_apps[0]
+            msg = platform_msgs.use_scalingo_app(app_name)
+            confirmed = plugin_utils.get_confirmation(msg)
+
+            if not confirmed:
+                raise DSDCommandError(platform_msgs.no_remote_project)
+            else:
+                msg = f"\nOkay, deploying to {app_name}..."
+                dsd_config.deployed_project_name = app_name
+                self.app_name = app_name
+                plugin_utils.write_output(msg)
+                return
+
+        # There's more than one Scalingo app with a new status.
+        # We're not handling this case now.
+        raise DSDCommandError(platform_msgs.multiple_new_apps)
 
 
     def _prep_automate_all(self):
         """Take any further actions needed if using automate_all."""
+        if not dsd_config.automate_all:
+            return
+
         # DEV: Consider creating these resources as late as possible.
         # Create a new project on Scalingo.
         msg = "  Creating a new app on Scalingo..."
@@ -109,6 +165,27 @@ class PlatformDeployer:
         output_str = output_obj.stdout.decode()
         plugin_utils.write_output(output_str)
 
+        # If the remote project already exists, bail.
+        if "name → has already been taken" in output_str:
+            raise DSDCommandError(platform_msgs.project_already_exists)
+
+        self._create_postgres_db()
+
+    def _prep_config_only(self):
+        """Complete any work needed to support the configuration-only workflow."""
+        if dsd_config.automate_all:
+            return
+            
+        # Create a db, assuming the remote app does not already have one.
+        existing_dbs = scalingo_utils.get_existing_dbs(self.app_name)
+        if not existing_dbs:
+            self._create_postgres_db()
+        else:
+            msg = platform_msgs.found_existing_db(self.app_name, existing_dbs)
+            raise DSDCommandError(msg)
+
+    def _create_postgres_db(self):
+        """Create a remote Postgres db."""
         msg = "  Creating a new Postgres db..."
         plugin_utils.write_output(msg)
 
@@ -117,7 +194,8 @@ class PlatformDeployer:
         output_str = output_obj.stdout.decode()
         plugin_utils.write_output(output_str)
 
-        # DEV: Write a loop to poll for a running db instance.
+        # DEV: Write a loop to poll for a running db instance. Query for addons, look at status
+        # of PostgreSQL instance.
         time.sleep(30)
 
     def _add_python_version(self):

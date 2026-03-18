@@ -35,10 +35,49 @@ You can log in from  the command line:
   $ scalingo login
 """
 
+# DEV: This should probably be a dynamic string, with the project name.
+project_already_exists = """
+A remote project with this name already exists.
+"""
+
+no_remote_project = """
+There is no remote project to deploy to. Before using the configuration-only
+mode, please create a remote project. You can use the Scalingo cli to create a
+project:
+    $ scalingo create <remote-project-name>
+"""
+
+multiple_new_apps = """
+Multiple apps with a status of `new` were found. There needs to be only one
+app with a status of `new` to deploy to.
+"""
+
 
 # --- Dynamic strings ---
 # These need to be generated in functions, to display information that's determined as
 # the script runs.
+
+def use_scalingo_app(app_name):
+    """Confirmation message for using a Scalingo app that we found."""
+    msg = dedent(
+        f"""
+        Found one Scalingo app with a status of `new`: {app_name}
+        Is this the Scalingo app you want to deploy to?
+    """
+    )
+    return msg
+
+def found_existing_db(app_name, db_names):
+    """Confirmation message for using a Scalingo app that we found."""
+    db_names = "\n".join(db_names)
+    msg = dedent(
+        f"""
+        The Scalingo app {app_name} already has an existing database:
+        {db_names}
+        Expecting no database.
+    """
+    )
+    return msg
 
 def success_msg(log_output=""):
     """Success message, for configuration-only run.
@@ -57,13 +96,13 @@ def success_msg(log_output=""):
             $ git add .
             $ git commit -am "Configured project for deployment."
         - Push your project to Scalingo's servers:
-            $ ...
+            $ git push scalingo main
         - Open your project:
-            $ ...    
+            $ scalingo open
         - As you develop your project further:
             - Make local changes
             - Commit your local changes
-            - Run `...` again to push your changes.
+            - Run `git push scalingo main` again to push your changes.
     """
     )
 
