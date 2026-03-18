@@ -63,6 +63,7 @@ class PlatformDeployer:
 
         self._validate_platform()
         self._prep_automate_all()
+        self._prep_config_only()
         breakpoint()
 
         # Configure project for deployment to Scalingo
@@ -131,6 +132,7 @@ class PlatformDeployer:
             else:
                 msg = f"\nOkay, deploying to {app_name}..."
                 dsd_config.deployed_project_name = app_name
+                self.app_name = app_name
                 plugin_utils.write_output(msg)
                 return
 
@@ -141,6 +143,9 @@ class PlatformDeployer:
 
     def _prep_automate_all(self):
         """Take any further actions needed if using automate_all."""
+        if not dsd_config.automate_all:
+            return
+
         # DEV: Consider creating these resources as late as possible.
         # Create a new project on Scalingo.
         msg = "  Creating a new app on Scalingo..."
@@ -166,6 +171,16 @@ class PlatformDeployer:
             raise DSDCommandError(platform_msgs.project_already_exists)
 
         self._create_postgres_db()
+
+    def _prep_config_only(self):
+        """Complete any work needed to support the configuration-only workflow."""
+        # Create a db, assuming the remote app does not already have one.
+        existing_dbs = scalingo_utils.get_existing_dbs(self.app_name)
+        if not existing_dbs:
+            self._create_postgres_db()
+        else:
+            msg = platform_msgs.found_existing_db(self.app_name, existing_dbs)
+            raise DSDCommandError(msg)
         
 
     def _create_postgres_db(self):
@@ -178,7 +193,8 @@ class PlatformDeployer:
         output_str = output_obj.stdout.decode()
         plugin_utils.write_output(output_str)
 
-        # DEV: Write a loop to poll for a running db instance.
+        # DEV: Write a loop to poll for a running db instance. Query for addons, look at status
+        # of PostgreSQL instance.
         time.sleep(30)
 
     def _add_python_version(self):

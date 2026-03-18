@@ -52,6 +52,7 @@ Multiple apps with a status of `new` were found. There needs to be only one
 app with a status of `new` to deploy to.
 """
 
+
 # --- Dynamic strings ---
 # These need to be generated in functions, to display information that's determined as
 # the script runs.
@@ -62,6 +63,18 @@ def use_scalingo_app(app_name):
         f"""
         Found one Scalingo app with a status of `new`: {app_name}
         Is this the Scalingo app you want to deploy to?
+    """
+    )
+    return msg
+
+def found_existing_db(app_name, db_names):
+    """Confirmation message for using a Scalingo app that we found."""
+    db_names = "\n".join(db_names)
+    msg = dedent(
+        f"""
+        The Scalingo app {app_name} already has an existing database:
+        {db_names}
+        Expecting no database.
     """
     )
     return msg

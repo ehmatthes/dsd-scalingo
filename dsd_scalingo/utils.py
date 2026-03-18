@@ -13,6 +13,14 @@ def get_new_apps():
 
     return [app for app in app_names if _get_app_status(app) == "new"]
 
+def get_existing_dbs(app_name):
+    """Check addons for this Scalingo app, and return any databases."""
+    cmd = f"scalingo addons --app {app_name}"
+    output_obj = plugin_utils.run_quick_command(cmd)
+    db_names = _parse_existing_dbs(output_obj.stdout.decode())
+
+    return []
+
 
 # --- Helper functions ---
 
@@ -35,3 +43,9 @@ def _parse_status(apps_info_string):
     re_status = r"^\u2502 Status\s*\u2502\s*(\S*)\s*\u2502"
     m = re.search(re_status, apps_info_string, re.MULTILINE)
     return m.group(1)
+
+def _parse_existing_dbs(addons_info_string):
+    """Parse existing databases from result of `addons`."""
+    re_dbs = r"^\u2502 PostgreSQL\s*\u2502\s*\S*\s*\u2502 (\S*)\s*\u2502"
+    matches = re.finditer(re_dbs, addons_info_string, re.MULTILINE)
+    return [m.group(1) for m in matches]
