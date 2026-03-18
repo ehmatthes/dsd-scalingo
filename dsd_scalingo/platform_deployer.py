@@ -173,6 +173,9 @@ class PlatformDeployer:
 
     def _prep_config_only(self):
         """Complete any work needed to support the configuration-only workflow."""
+        if dsd_config.automate_all:
+            return
+            
         # Create a db, assuming the remote app does not already have one.
         existing_dbs = scalingo_utils.get_existing_dbs(self.app_name)
         if not existing_dbs:
