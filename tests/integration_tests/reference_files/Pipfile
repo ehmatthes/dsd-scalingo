@@ -8,6 +8,11 @@ django = "*"
 django-bootstrap5 = "*"
 requests = "*"
 django-simple-deploy = "=={current-version}"
+gunicorn = "*"
+psycopg2 = "*"
+dj-database-url = "*"
+whitenoise = "*"
+dj-static = "*"
 
 [dev-packages]
 

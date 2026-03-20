@@ -88,6 +88,7 @@ class PlatformDeployer:
         ...
         # DEV: Consider `scalingo self` or `scalingo whoami`
         if dsd_config.unit_testing:
+            self.app_name = dsd_config.deployed_project_name
             return
 
         plugin_utils.write_output("Validating Scalingo CLI...")
@@ -173,7 +174,7 @@ class PlatformDeployer:
 
     def _prep_config_only(self):
         """Complete any work needed to support the configuration-only workflow."""
-        if dsd_config.automate_all:
+        if dsd_config.automate_all or dsd_config.unit_testing:
             return
             
         # Create a db, assuming the remote app does not already have one.
