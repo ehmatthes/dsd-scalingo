@@ -19,8 +19,6 @@ def create_project(scalingo_app_name):
     )
     print("create_project output:", output)
 
-    print(f"  App name: {scalingo_app_name}")
-
 def deploy_project(app_name):
     """Make a non-automated deployment."""
     # Consider pausing before the deployment. Some platforms need a moment
@@ -37,12 +35,6 @@ def deploy_project(app_name):
         .strip()
     )
     print("scalingo open output:", output)
-
-    # Deployed URL will look like this (for me, from US):
-    # https://blog-e2e-aw1czkq9jfybp3ri.osc-fr1.scalingo.io/
-    # DEV: How can we construct this URL by querying for deployed region?
-    project_url = f"https://{app_name}.osc-fr1.scalingo.io"
-    return project_url
 
 def check_log(tmp_proj_dir):
     """Check the log that was generated during a full deployment.

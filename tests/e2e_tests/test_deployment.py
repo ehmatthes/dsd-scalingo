@@ -38,20 +38,21 @@ def test_deployment(tmp_project, cli_options, request):
     # Make a unique name for this test deployment, so we can reliably destroy it
     # without risking any of the developer's own projects.
     name_extension = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
-    deployed_project_name = f"blog-e2e-{name_extension}"
+    app_name = f"blog-e2e-{name_extension}"
+    # Cache the app name for teardown work.
+    request.config.cache.set("app_name", app_name)
 
     # Note: If not using automate_all, take steps here that the end user would take.
     # Create a new project on the remote host, if not testing --automate-all.
     if not cli_options.automate_all:
-        platform_utils.create_project(deployed_project_name)
-        app_name = deployed_project_name
+        platform_utils.create_project(app_name)
         request.config.cache.set("app_name", app_name)
 
     # Run simple_deploy against the test project.
     # We only need to set `--deployed-project-name` for --automate-all. Config-only
     # calls `scalingo create` with the correct name, and the plugin queries for that name.
     if cli_options.automate_all:
-        plugin_args_string = f"--deployed-project-name {deployed_project_name}"
+        plugin_args_string = f"--deployed-project-name {app_name}"
     else:
         plugin_args_string = ""
     it_utils.run_simple_deploy(python_cmd, automate_all=cli_options.automate_all, plugin_args_string=plugin_args_string)
@@ -60,20 +61,12 @@ def test_deployment(tmp_project, cli_options, request):
     if cli_options.pkg_manager == "pipenv":
         it_utils.make_sp_call(f"{python_cmd} -m pipenv lock")
 
-    # Note: This is an example of how you can stash information about the deployment, 
-    #   which can be used in the teardown phase. You do need to set project_url,
-    #   in order to run functionality tests against the deployed project.
-    # 
-    # Get the deployed project's URL, and ID so we can destroy it later.
-    #   This also commits configuration changes and pushes the project
-    #   when testing the configuration-only workflow.
-    # When testing automate_all, cache app_name for teardown work.
-    if cli_options.automate_all:
-        project_url = f"https://{deployed_project_name}.osc-fr1.scalingo.io"
-        request.config.cache.set("app_name", deployed_project_name)
-    else:
+    # For config-only tests, commit changes and run `git push` command.
+    if not cli_options.automate_all:
         it_utils.commit_configuration_changes()
-        project_url = platform_utils.deploy_project(app_name)
+        platform_utils.deploy_project(app_name)
+
+    project_url = f"https://{app_name}.osc-fr1.scalingo.io"
 
     # Remote functionality test often fails if run too quickly after deployment.
     print("\nPausing 10s to let deployment finish...")
