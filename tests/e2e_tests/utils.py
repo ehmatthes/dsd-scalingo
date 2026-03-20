@@ -9,21 +9,18 @@ import json
 from tests.e2e_tests.utils.it_helper_functions import make_sp_call
 
 
-# def create_project():
-#     """Create a project on Fly.io."""
-#     print("\n\nCreating a project on Fly.io...")
-#     output = (
-#         make_sp_call(f"fly apps create --generate-name", capture_output=True)
-#         .stdout.decode()
-#         .strip()
-#     )
-#     print("create_project output:", output)
+def create_project(scalingo_app_name):
+    """Create an app on Scalingo."""
+    print("\n\nCreating an app on Scalingo...")
+    output = (
+        make_sp_call(f"scalingo create {scalingo_app_name}", capture_output=True)
+        .stdout.decode()
+        .strip()
+    )
+    print("create_project output:", output)
 
-#     re_app_name = r"New app created: (.*)"
-#     app_name = re.search(re_app_name, output).group(1)
-#     print(f"  App name: {app_name}")
+    print(f"  App name: {scalingo_app_name}")
 
-#     return app_name
 
 
 # def deploy_project(app_name):
