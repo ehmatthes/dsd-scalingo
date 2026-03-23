@@ -3,6 +3,17 @@ Changelog: dsd-<platformname>
 
 0.2 - Preliminary support configuration-only deployments.
 
+### Unreleased
+
+#### External changes
+
+- 
+
+#### Internal changes
+
+- Run unit tests with `pytest tests/plugin_unit_tests`.
+- E2e tests pass on macOS and Windows for config-only and fully automated workflows.
+
 ### 0.2.0
 
 #### External changes
