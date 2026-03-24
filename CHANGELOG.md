@@ -3,11 +3,13 @@ Changelog: dsd-<platformname>
 
 0.2 - Preliminary support configuration-only deployments.
 
-### Unreleased
+### 0.2.1
 
 #### External changes
 
-- 
+- Checks that at least one SSH key has been uploaded to Scalingo.
+- Success messages include instructions for running management commands on the remote server.
+- Replace underscores with hyphens in deployed project names.
 
 #### Internal changes
 
