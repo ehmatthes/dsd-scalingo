@@ -109,6 +109,13 @@ class PlatformDeployer:
         if "You are logged in as " not in output_obj.stdout.decode():
             raise DSDCommandError(platform_msgs.cli_logged_out)
 
+        # Check that at least one SSH key has been uploaded.
+        cmd = "scalingo keys"
+        output_obj = plugin_utils.run_quick_command(cmd)
+        output_str = output_obj.stdout.decode().strip()
+        if output_str == "┌──────┬─────────┐\n│ NAME │ CONTENT │\n└──────┴─────────┘":
+            raise DSDCommandError(platform_msgs.no_ssh_keys)
+
         plugin_utils.write_output("  CLI is installed and authenticated.")
 
         if dsd_config.automate_all:
@@ -153,7 +160,7 @@ class PlatformDeployer:
 
         # Set the Scalingo project name.
         if not dsd_config.deployed_project_name:
-            dsd_config.deployed_project_name = dsd_config.local_project_name
+            dsd_config.deployed_project_name = dsd_config.local_project_name.replace("_", "-")
             if len(dsd_config.deployed_project_name) <= 6:
                 # Scalingo project names need to be between 6 and 48 characters.
                 dsd_config.deployed_project_name += "-deployed"
