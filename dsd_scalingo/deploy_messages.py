@@ -103,6 +103,7 @@ def success_msg(log_output=""):
             - Make local changes
             - Commit your local changes
             - Run `git push scalingo main` again to push your changes.
+            - Run management commands: `scalingo run python manage.py createsuperuser`
     """
     )
 
@@ -128,10 +129,13 @@ def success_msg_automate_all(deployed_url):
           "server not available" message, wait a minute or two and
           refresh the tab. It sometimes takes a few minutes for the
           server to be ready.
+        
         - You can also visit your project at {deployed_url}
+        - If you make further changes and want to push them to Scalingo,
+          commit your changes and then run `git push scalingo main`.
+        - Use `scalingo run` to run management commands:
+          `scalingo run python manage.py createsuperuser`
 
-        If you make further changes and want to push them to Scalingo,
-        commit your changes and then run `git push scalingo main`.
     """
     )
     return msg
