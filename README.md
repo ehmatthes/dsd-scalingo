@@ -1,6 +1,6 @@
 # dsd-scalingo
 
-A plugin for deploying Django projects to Scalingo, using django-simple-deploy.
+A plugin for deploying Django projects to [Scalingo](https://scalingo.com), using django-simple-deploy.
 
 For full documentation, see the documentation for [django-simple-deploy](https://django-simple-deploy.readthedocs.io/en/latest/).
 
@@ -9,13 +9,20 @@ Current status
 
 This plugin is in a pre-1.0 development phase. Scalingo has one of the best free trial plans in the industry, so this plugin will be prioritized and should move forward quickly.
 
+Prerequisites
+---
+
+- You need to be using Git for version control, and your project needs to start with a clean status (no uncommitted changes).
+- You need to have a requirements.txt file. Deployment should also work if you're using Poetry or Pipenv. If you're using uv, you can generate a requirements.txt file and then run the `deploy` command as described below.
+- You need an active account on [Scalingo](https://scalingo.com).
+
 Configuration-only deployment
 ---
 
 In this mode, django-simple-deploy handles all the configuration work, but lets you create the remote Scalingo app, commit changes that are made, and run the `push` command yourself.
 
-- Install the Scalingo CLI.
-- Upload your SSH public key to Scalingo.
+- [Install](https://doc.scalingo.com/tools/cli/start) the Scalingo CLI.
+- [Upload](https://doc.scalingo.com/platform/getting-started/first-steps#ssh-key-setup) your SSH public key to Scalingo.
 - Run the following commands to install the plugin, and create a remote Scalingo app:
 ```sh
 $ pip install dsd-scalingo
@@ -39,8 +46,8 @@ Your deployed project should appear in a new browser tab.
 Fully automated deployment
 ---
 
-- Install the Scalingo CLI.
-- Upload your SSH public key to Scalingo.
+- [Install](https://doc.scalingo.com/tools/cli/start) the Scalingo CLI.
+- [Upload](https://doc.scalingo.com/platform/getting-started/first-steps#ssh-key-setup) your SSH public key to Scalingo.
 - Run the following commands:
 ```sh
 $ scalingo login
@@ -59,6 +66,8 @@ If you're doing a test deployment and want to destroy your project:
 ```sh
 $ scalingo --app <app-name> destroy
 ```
+
+You can also destroy projects through the [Scalingo dashboard](https://dashboard.scalingo.com).
 
 Scalingo documentation
 ---
