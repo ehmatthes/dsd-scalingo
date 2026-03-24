@@ -3,6 +3,16 @@ Changelog: dsd-<platformname>
 
 0.2 - Preliminary support configuration-only deployments.
 
+### 0.2.2
+
+#### External changes
+
+- Sets `DEBUG` to `False` by default.
+
+#### Internal changes
+
+- N/A
+
 ### 0.2.1
 
 #### External changes
