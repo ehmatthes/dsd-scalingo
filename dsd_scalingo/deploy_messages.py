@@ -52,6 +52,15 @@ Multiple apps with a status of `new` were found. There needs to be only one
 app with a status of `new` to deploy to.
 """
 
+no_ssh_keys = """
+No SSH keys have been uploaded to your Scalingo account.
+
+If you know the path to your public key, you can run:
+$ scalingo keys-add <name of key> <path/to/key>
+
+Otherwise, see: https://doc.scalingo.com/platform/getting-started/first-steps#ssh-key-setup
+"""
+
 
 # --- Dynamic strings ---
 # These need to be generated in functions, to display information that's determined as
