@@ -3,6 +3,16 @@ Changelog: dsd-<platformname>
 
 0.2 - Preliminary support configuration-only deployments.
 
+### Unreleased
+
+#### External changes
+
+- Added links to README, and clarified some steps.
+
+#### Internal links
+
+- N/A
+
 ### 0.2.2
 
 #### External changes
