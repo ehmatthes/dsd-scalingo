@@ -2,6 +2,7 @@
 
 from . import deploy_messages as platform_msgs
 
+from django_simple_deploy.management.commands.utils.plugin_utils import dsd_config
 from django_simple_deploy.management.commands.utils import plugin_utils
 from django_simple_deploy.management.commands.utils.command_errors import DSDCommandError
 
@@ -11,10 +12,16 @@ def key_assist():
 
     We only get here if `scalingo keys` returns no existing SSH keys uploaded.
     """
+    # Key Assist is not yet available on Windows.
+    if dsd_config.on_windows:
+        raise DSDCommandError(platform_msgs.no_ssh_keys)
+
     confirm_assist = plugin_utils.get_confirmation(platform_msgs.key_assist_offer)
     if not confirm_assist:
         raise DSDCommandError(platform_msgs.no_ssh_keys)
 
+    if dsd_config.on_windows:
+        plugin_utils.write_output()
 
 
     breakpoint()
