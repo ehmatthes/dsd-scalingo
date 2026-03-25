@@ -39,6 +39,7 @@ import requests
 from . import deploy_messages as platform_msgs
 from .plugin_config import plugin_config
 from . import utils as scalingo_utils
+from . import key_utils
 
 from django_simple_deploy.management.commands.utils import plugin_utils
 from django_simple_deploy.management.commands.utils.plugin_utils import dsd_config
@@ -114,6 +115,8 @@ class PlatformDeployer:
         output_obj = plugin_utils.run_quick_command(cmd)
         output_str = output_obj.stdout.decode().strip()
         if output_str == "┌──────┬─────────┐\n│ NAME │ CONTENT │\n└──────┴─────────┘":
+            if plugin_config.key_assist:
+                key_utils.key_assist()
             raise DSDCommandError(platform_msgs.no_ssh_keys)
 
         plugin_utils.write_output("  CLI is installed and authenticated.")

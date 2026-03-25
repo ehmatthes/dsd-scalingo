@@ -38,11 +38,11 @@ class PluginCLI:
 
 def validate_cli(options):
     """Validate options that were passed to CLI."""
+    plugin_config.key_assist = options["key_assist"]
 
     # vm_size = options["vm_size"]
     # _validate_vm_size(vm_size)
 
-    pass
 
 
 # --- Helper functions ---
