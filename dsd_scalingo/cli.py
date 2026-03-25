@@ -24,9 +24,8 @@ class PluginCLI:
 
         plugin_group.add_argument(
             "--key-assist",
-            type=bool,
             help="Experimental support for managing SSH keys on Scalingo.",
-            default=False,
+            action="store_true",
         )
 
         # plugin_group.add_argument(
