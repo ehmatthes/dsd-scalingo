@@ -22,6 +22,13 @@ class PluginCLI:
             description = group_desc,
         )
 
+        plugin_group.add_argument(
+            "--key-assist",
+            type=bool,
+            help="Experimental support for managing SSH keys on Scalingo.",
+            default=False,
+        )
+
         # plugin_group.add_argument(
         #     "--vm-size",
         #     type=str,
