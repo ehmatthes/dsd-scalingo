@@ -1,6 +1,7 @@
 """Utilities for managing SSH keys on Scalingo."""
 
 from pathlib import Path
+import socket
 
 from . import deploy_messages as platform_msgs
 
@@ -36,11 +37,19 @@ def key_assist():
         # DEV: If not, offer to generate a new pair when that's supported.
         key_path = key_paths[0]
         msg = f"One public SSH key found: {key_path.as_posix()}"
-        msg += "Would you like to upload this key?"
+        msg += "\nWould you like to upload this key?\n"
         confirm_upload_key = plugin_utils.get_confirmation(msg)
 
         if confirm_upload_key:
-            cmd = f"scalingo keys-add {key_path.as_posix()}"
+            suggested_name = _get_suggested_key_name()
+            msg = f"Okay to use key name: {suggested_name}\n"
+            confirm_suggested_name = plugin_utils.get_confirmation(msg)
+            if not confirm_suggested_name:
+                msg = "Support for using a custom key name not implemented yet."
+                plugin_utils.write_output(msg)
+                raise DSDCommandError(platform_msgs.no_ssh_keys)
+
+            cmd = f"scalingo keys-add {suggested_name} {key_path.as_posix()}"
             output_obj = plugin_utils.run_quick_command(cmd)
             plugin_utils.write_output(output_obj)
             return
@@ -80,3 +89,8 @@ def _find_keys():
             key_paths.append(p)
 
     return key_paths
+
+def _get_suggested_key_name():
+    """Return a suitable name for the SSH key we're about to upload."""
+    hostname = socket.gethostname().replace(".local", "")
+    return f"dsd-scalingo-{hostname}"
