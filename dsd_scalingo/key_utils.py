@@ -18,14 +18,42 @@ def key_assist():
     if dsd_config.on_windows:
         raise DSDCommandError(platform_msgs.no_ssh_keys)
 
+    # Check if the user wants assistance with managing keys.
     confirm_assist = plugin_utils.get_confirmation(platform_msgs.key_assist_offer)
     if not confirm_assist:
         raise DSDCommandError(platform_msgs.no_ssh_keys)
 
-    if dsd_config.on_windows:
-        plugin_utils.write_output()
-
     key_paths = _find_keys()
+
+    if not key_paths:
+        # No suitable keys found.
+        msg = "No suitable SSH keys were found. Support for generating new keys is not implemented yet."
+        plugin_utils.write_output(msg)
+        raise DSDCommandError(platform_msgs.no_ssh_keys)
+
+    elif len(key_paths) == 1:
+        # One key found. Ask if it's okay to use.
+        # DEV: If not, offer to generate a new pair when that's supported.
+        key_path = key_paths[0]
+        msg = f"One public SSH key found: {key_path.as_posix()}"
+        msg += "Would you like to upload this key?"
+        confirm_upload_key = plugin_utils.get_confirmation(msg)
+
+        if confirm_upload_key:
+            cmd = f"scalingo keys-add {key_path.as_posix()}"
+            output_obj = plugin_utils.run_quick_command(cmd)
+            plugin_utils.write_output(output_obj)
+            return
+        else:
+            raise DSDCommandError(platform_msgs.no_ssh_keys)
+
+
+    else:
+        # More than one key found. Ask which to use.
+        msg = "Multiple SSH keys were found. Support for choosing a key is not implemented yet."
+        plugin_utils.write_output(msg)
+        raise DSDCommandError(platform_msgs.no_ssh_keys)
+
 
     breakpoint()
 
