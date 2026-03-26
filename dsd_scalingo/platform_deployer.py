@@ -116,8 +116,11 @@ class PlatformDeployer:
         output_str = output_obj.stdout.decode().strip()
         if output_str == "┌──────┬─────────┐\n│ NAME │ CONTENT │\n└──────┴─────────┘":
             if plugin_config.key_assist:
-                key_utils.key_assist()
-            raise DSDCommandError(platform_msgs.no_ssh_keys)
+                key_uploaded = key_utils.key_assist()
+                if not key_uploaded:
+                    raise DSDCommandError(platform_msgs.no_ssh_keys)
+            else:
+                raise DSDCommandError(platform_msgs.no_ssh_keys)
 
         plugin_utils.write_output("  CLI is installed and authenticated.")
 

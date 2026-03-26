@@ -17,6 +17,8 @@ def key_assist():
     """
     # Key Assist is not yet available on Windows.
     if dsd_config.on_windows:
+        msg = "Key assistance is not yet supported on Windows."
+        plugin_utils.write_output(msg)
         raise DSDCommandError(platform_msgs.no_ssh_keys)
 
     # Check if the user wants assistance with managing keys.
@@ -52,10 +54,10 @@ def key_assist():
             cmd = f"scalingo keys-add {suggested_name} {key_path.as_posix()}"
             output_obj = plugin_utils.run_quick_command(cmd)
             plugin_utils.write_output(output_obj)
-            return
+            return True
+
         else:
             raise DSDCommandError(platform_msgs.no_ssh_keys)
-
 
     else:
         # More than one key found. Ask which to use.
