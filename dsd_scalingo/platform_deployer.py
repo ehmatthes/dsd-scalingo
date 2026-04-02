@@ -174,7 +174,7 @@ class PlatformDeployer:
             # This also means we don't need to check the length of the name,
             # because it will always pass the minimum length. (6-48 chars)
             dsd_config.deployed_project_name = dsd_config.local_project_name.replace("_", "-")
-            dsd_config.deployed_project_name += secrets.token_hex(4)
+            dsd_config.deployed_project_name += f"-{secrets.token_hex(4)}"
         
         self.app_name = dsd_config.deployed_project_name
 
