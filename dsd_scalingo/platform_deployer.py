@@ -31,6 +31,7 @@ Modify user's settings file:
 import sys, os, re, json
 from pathlib import Path
 import time
+import secrets
 
 from django.utils.safestring import mark_safe
 
@@ -166,10 +167,14 @@ class PlatformDeployer:
 
         # Set the Scalingo project name.
         if not dsd_config.deployed_project_name:
+            # Scalingo requires every project name on the platform to be unique.
+            # Add a random 8-character token to the name. This only applies if we're
+            # generating the name. When `--deployed-project-name` is used, the
+            # user probably wants to set the name themselves.
+            # This also means we don't need to check the length of the name,
+            # because it will always pass the minimum length. (6-48 chars)
             dsd_config.deployed_project_name = dsd_config.local_project_name.replace("_", "-")
-            if len(dsd_config.deployed_project_name) <= 6:
-                # Scalingo project names need to be between 6 and 48 characters.
-                dsd_config.deployed_project_name += "-deployed"
+            dsd_config.deployed_project_name += f"-{secrets.token_hex(4)}"
         
         self.app_name = dsd_config.deployed_project_name
 
