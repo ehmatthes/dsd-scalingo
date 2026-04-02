@@ -3,11 +3,13 @@ Changelog: dsd-<platformname>
 
 0.2 - Preliminary support configuration-only deployments.
 
-### Unreleased
+### 0.2.3
 
 #### External changes
 
 - Added links to README, and clarified some steps.
+- Support for uploading SSH keys is partially implemented, behind `--key-assist` CLI arg for now.
+- An 8-character random token is added to the deployed project name during fully automated deployments. Scalingo requires that every project name on the platform is unique, and this ensures the project name is unique.
 
 #### Internal links
 
