@@ -22,6 +22,12 @@ class PluginCLI:
             description = group_desc,
         )
 
+        plugin_group.add_argument(
+            "--key-assist",
+            help="Experimental support for managing SSH keys on Scalingo.",
+            action="store_true",
+        )
+
         # plugin_group.add_argument(
         #     "--vm-size",
         #     type=str,
@@ -32,11 +38,11 @@ class PluginCLI:
 
 def validate_cli(options):
     """Validate options that were passed to CLI."""
+    plugin_config.key_assist = options["key_assist"]
 
     # vm_size = options["vm_size"]
     # _validate_vm_size(vm_size)
 
-    pass
 
 
 # --- Helper functions ---

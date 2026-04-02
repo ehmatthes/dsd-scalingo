@@ -61,6 +61,12 @@ $ scalingo keys-add <name of key> <path/to/key>
 Otherwise, see: https://doc.scalingo.com/platform/getting-started/first-steps#ssh-key-setup
 """
 
+key_assist_offer = """
+No SSH keys have been uploaded to your Scalingo account.
+
+Would you like help uploading an SSH key to Scalingo?
+"""
+
 
 # --- Dynamic strings ---
 # These need to be generated in functions, to display information that's determined as

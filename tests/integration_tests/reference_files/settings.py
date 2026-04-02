@@ -138,7 +138,7 @@ import os
 if "scalingo" in os.environ.get("STACK", ""):
     import dj_database_url
 
-    DEBUG = True
+    DEBUG = False
 
     DATABASES = {
         "default": dj_database_url.config(
