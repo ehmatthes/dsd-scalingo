@@ -35,13 +35,8 @@ def check_ssh_key_uploaded(key_assist=False):
     cmd = "scalingo keys"
     output_obj = plugin_utils.run_quick_command(cmd)
     output_str = output_obj.stdout.decode().strip()
-
-    if output_str != "┌──────┬─────────┐\n│ NAME │ CONTENT │\n└──────┴─────────┘":
-        return
-
-    # No key uploaded.
-    if key_assist:
-        key_utils.upload_key()
+    if output_str == "┌──────┬─────────┐\n│ NAME │ CONTENT │\n└──────┴─────────┘":
+        key_utils.upload_key(key_assist)
 
 def get_new_apps():
     """Check user's apps, and only consider apps that have a status of `new`."""

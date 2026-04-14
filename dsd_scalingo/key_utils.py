@@ -10,18 +10,22 @@ from django_simple_deploy.management.commands.utils import plugin_utils
 from django_simple_deploy.management.commands.utils.command_errors import DSDCommandError
 
 
-def upload_key():
+def upload_key(key_assist=False):
     """Assist with managing SSH keys on Scalingo.
 
     We only get here if `scalingo keys` returns no existing SSH keys uploaded.
     """
+    # Remove this block when the --key-assist feature flag is removed.
+    if not key_assist:
+        raise DSDCommandError(platform_msgs.no_ssh_keys)
+
     # Key Assist is not yet available on Windows.
     if dsd_config.on_windows:
         msg = "Key assistance is not yet supported on Windows."
         plugin_utils.write_output(msg)
         raise DSDCommandError(platform_msgs.no_ssh_keys)
 
-    # Check if the user wants assistance with managing keys.
+    # Verify the user wants assistance with managing keys.
     confirm_assist = plugin_utils.get_confirmation(platform_msgs.key_assist_offer)
     if not confirm_assist:
         raise DSDCommandError(platform_msgs.no_ssh_keys)
