@@ -16,9 +16,17 @@ def check_cli_installed():
         output_obj = plugin_utils.run_quick_command(cmd)
     except FileNotFoundError:
         raise DSDCommandError(platform_msgs.cli_not_installed)
-        
+
     if "scalingo version " not in output_obj.stdout.decode():
         raise DSDCommandError(platform_msgs.cli_not_installed)
+
+def check_cli_authenticated():
+    """Make sure CLI session is authenticated."""
+    cmd = "scalingo whoami"
+    output_obj = plugin_utils.run_quick_command(cmd)
+
+    if "You are logged in as " not in output_obj.stdout.decode():
+        raise DSDCommandError(platform_msgs.cli_logged_out)
 
 def get_new_apps():
     """Check user's apps, and only consider apps that have a status of `new`."""

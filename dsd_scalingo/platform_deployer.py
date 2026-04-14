@@ -94,12 +94,7 @@ class PlatformDeployer:
 
         plugin_utils.write_output("Validating Scalingo CLI...")
         scalingo_utils.check_cli_installed()
-        
-        cmd = "scalingo whoami"
-        output_obj = plugin_utils.run_quick_command(cmd)
-
-        if "You are logged in as " not in output_obj.stdout.decode():
-            raise DSDCommandError(platform_msgs.cli_logged_out)
+        scalingo_utils.check_cli_authenticated()
 
         # Check that at least one SSH key has been uploaded.
         cmd = "scalingo keys"
