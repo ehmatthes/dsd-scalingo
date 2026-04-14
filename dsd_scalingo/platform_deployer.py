@@ -40,7 +40,6 @@ import requests
 from . import deploy_messages as platform_msgs
 from .plugin_config import plugin_config
 from . import utils as scalingo_utils
-from . import key_utils
 
 from django_simple_deploy.management.commands.utils import plugin_utils
 from django_simple_deploy.management.commands.utils.plugin_utils import dsd_config
@@ -82,6 +81,10 @@ class PlatformDeployer:
     def _validate_platform(self):
         """Make sure the local environment and project supports deployment to Scalingo.
 
+        Checks:
+        - Scalingo CLI installed and authenticated.
+        - An SSH key has been uploaded.
+
         Returns:
             None
         Raises:
@@ -93,20 +96,10 @@ class PlatformDeployer:
             return
 
         plugin_utils.write_output("Validating Scalingo CLI...")
+
         scalingo_utils.check_cli_installed()
         scalingo_utils.check_cli_authenticated()
-
-        # Check that at least one SSH key has been uploaded.
-        cmd = "scalingo keys"
-        output_obj = plugin_utils.run_quick_command(cmd)
-        output_str = output_obj.stdout.decode().strip()
-        if output_str == "┌──────┬─────────┐\n│ NAME │ CONTENT │\n└──────┴─────────┘":
-            if plugin_config.key_assist:
-                key_uploaded = key_utils.key_assist()
-                if not key_uploaded:
-                    raise DSDCommandError(platform_msgs.no_ssh_keys)
-            else:
-                raise DSDCommandError(platform_msgs.no_ssh_keys)
+        scalingo_utils.check_ssh_key_uploaded(plugin_config.key_assist)
 
         plugin_utils.write_output("  CLI is installed and authenticated.")
 

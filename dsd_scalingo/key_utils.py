@@ -10,7 +10,7 @@ from django_simple_deploy.management.commands.utils import plugin_utils
 from django_simple_deploy.management.commands.utils.command_errors import DSDCommandError
 
 
-def key_assist():
+def upload_key():
     """Assist with managing SSH keys on Scalingo.
 
     We only get here if `scalingo keys` returns no existing SSH keys uploaded.
@@ -54,7 +54,7 @@ def key_assist():
             cmd = f"scalingo keys-add {suggested_name} {key_path.as_posix()}"
             output_obj = plugin_utils.run_quick_command(cmd)
             plugin_utils.write_output(output_obj)
-            return True
+            return
 
         else:
             raise DSDCommandError(platform_msgs.no_ssh_keys)
