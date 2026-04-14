@@ -2,8 +2,23 @@
 
 import re
 
-from django_simple_deploy.management.commands.utils import plugin_utils
+from . import deploy_messages as platform_msgs
 
+from django_simple_deploy.management.commands.utils import plugin_utils
+from django_simple_deploy.management.commands.utils.command_errors import DSDCommandError
+
+
+def check_cli_installed():
+    """Make sure Scalingo CLI is installed."""
+    # DEV: Consider `scalingo self` or `scalingo whoami`
+    cmd = "scalingo --version"
+    try:
+        output_obj = plugin_utils.run_quick_command(cmd)
+    except FileNotFoundError:
+        raise DSDCommandError(platform_msgs.cli_not_installed)
+        
+    if "scalingo version " not in output_obj.stdout.decode():
+        raise DSDCommandError(platform_msgs.cli_not_installed)
 
 def get_new_apps():
     """Check user's apps, and only consider apps that have a status of `new`."""

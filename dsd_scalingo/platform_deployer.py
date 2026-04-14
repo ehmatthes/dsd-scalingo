@@ -88,22 +88,12 @@ class PlatformDeployer:
             DSDCommandError: If we find any reason deployment won't work.
         """
         ...
-        # DEV: Consider `scalingo self` or `scalingo whoami`
         if dsd_config.unit_testing:
             self.app_name = dsd_config.deployed_project_name
             return
 
         plugin_utils.write_output("Validating Scalingo CLI...")
-        
-        # Make sure CLI is installed.
-        cmd = "scalingo --version"
-        try:
-            output_obj = plugin_utils.run_quick_command(cmd)
-        except FileNotFoundError:
-            raise DSDCommandError(platform_msgs.cli_not_installed)
-        
-        if "scalingo version " not in output_obj.stdout.decode():
-            raise DSDCommandError(platform_msgs.cli_not_installed)
+        scalingo_utils.check_cli_installed()
         
         cmd = "scalingo whoami"
         output_obj = plugin_utils.run_quick_command(cmd)
